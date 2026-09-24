@@ -1,10 +1,10 @@
 #include "pbdfluids.h"
 #include <cfloat>
 
-Real CubicKernel::m_radius;
-Real CubicKernel::m_k;
-Real CubicKernel::m_l;
-Real CubicKernel::m_W_zero;
+Real CubicSpline::m_radius;
+Real CubicSpline::m_k;
+Real CubicSpline::m_l;
+Real CubicSpline::m_W_zero;
 
 bool pbdfluids::computePBFDensity(
 	const unsigned int particleIndex,
@@ -21,18 +21,18 @@ bool pbdfluids::computePBFDensity(
 	Real &density)
 {
 	// Compute current density for particle i
-	density = mass[particleIndex] * CubicKernel::W_zero();
+	density = mass[particleIndex] * CubicSpline::W_zero();
 	for (unsigned int j = 0; j < numNeighbors; j++)
 	{
 		const unsigned int neighborIndex = neighbors[j];
 		if (neighborIndex < numberOfParticles)		// Test if fluid particle
 		{
-			density += mass[neighborIndex] * CubicKernel::W(x[particleIndex] - x[neighborIndex]);
+			density += mass[neighborIndex] * CubicSpline::W(x[particleIndex] - x[neighborIndex]);
 		}
 		else if (boundaryHandling)
 		{
 			// Boundary: Akinci2012
-			density += boundaryPsi[neighborIndex - numberOfParticles] * CubicKernel::W(x[particleIndex] - boundaryX[neighborIndex - numberOfParticles]);
+			density += boundaryPsi[neighborIndex - numberOfParticles] * CubicSpline::W(x[particleIndex] - boundaryX[neighborIndex - numberOfParticles]);
 		}
 	}
 
@@ -70,14 +70,14 @@ bool pbdfluids::computePBFLagrangeMultiplier(
 			const unsigned int neighborIndex = neighbors[j];
 			if (neighborIndex < numberOfParticles)		// Test if fluid particle
 			{
-				const Vector3r gradC_j = -mass[neighborIndex] / density0 * CubicKernel::gradW(x[particleIndex] - x[neighborIndex]);
+				const Vector3r gradC_j = -mass[neighborIndex] / density0 * CubicSpline::gradW(x[particleIndex] - x[neighborIndex]);
 				sum_grad_C2 += gradC_j.squaredNorm();
 				gradC_i -= gradC_j;
 			}
 			else if (boundaryHandling)
 			{
 				// Boundary: Akinci2012
-				const Vector3r gradC_j = -boundaryPsi[neighborIndex - numberOfParticles] / density0 * CubicKernel::gradW(x[particleIndex] - boundaryX[neighborIndex - numberOfParticles]);
+				const Vector3r gradC_j = -boundaryPsi[neighborIndex - numberOfParticles] / density0 * CubicSpline::gradW(x[particleIndex] - boundaryX[neighborIndex - numberOfParticles]);
 				sum_grad_C2 += gradC_j.squaredNorm();
 				gradC_i -= gradC_j;
 			}
@@ -115,13 +115,13 @@ bool pbdfluids::solveDensityConstraint(
 		const unsigned int neighborIndex = neighbors[j];
 		if (neighborIndex < numberOfParticles)		// Test if fluid particle
 		{
-			const Vector3r gradC_j = -mass[neighborIndex] / density0 * CubicKernel::gradW(x[particleIndex] - x[neighborIndex]);
+			const Vector3r gradC_j = -mass[neighborIndex] / density0 * CubicSpline::gradW(x[particleIndex] - x[neighborIndex]);
 			corr -= (lambda[particleIndex] + lambda[neighborIndex]) * gradC_j;
 		}
 		else if (boundaryHandling)
 		{
 			// Boundary: Akinci2012
-			const Vector3r gradC_j = -boundaryPsi[neighborIndex - numberOfParticles] / density0 * CubicKernel::gradW(x[particleIndex] - boundaryX[neighborIndex - numberOfParticles]);
+			const Vector3r gradC_j = -boundaryPsi[neighborIndex - numberOfParticles] / density0 * CubicSpline::gradW(x[particleIndex] - boundaryX[neighborIndex - numberOfParticles]);
 			corr -= (lambda[particleIndex]) * gradC_j;
 		}
 	}

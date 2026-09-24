@@ -2,37 +2,37 @@
 #include "pbdfluids.h"
 #include <vector>
 
-void test_cubic_kernel_properties() {
+void test_cubic_spline_properties() {
     Real h = static_cast<Real>(0.5);
-    CubicKernel::setRadius(h);
+    CubicSpline::setRadius(h);
 
-    TEST_NEAR(CubicKernel::getRadius(), h, 1e-6);
+    TEST_NEAR(CubicSpline::getRadius(), h, 1e-6);
 
     // W(0) should be strictly positive
-    Real w_zero = CubicKernel::W_zero();
+    Real w_zero = CubicSpline::W_zero();
     TEST_ASSERT(w_zero > 0.0);
 
     // Compact support: W(r) == 0 for r >= h
     Vector3r r_outside(h + static_cast<Real>(0.01), 0.0, 0.0);
-    TEST_NEAR(CubicKernel::W(r_outside), 0.0, 1e-6);
+    TEST_NEAR(CubicSpline::W(r_outside), 0.0, 1e-6);
 
     // Symmetry: W(r) == W(-r)
     Vector3r r(static_cast<Real>(0.1), static_cast<Real>(-0.2), static_cast<Real>(0.15));
-    TEST_NEAR(CubicKernel::W(r), CubicKernel::W(-r), 1e-6);
+    TEST_NEAR(CubicSpline::W(r), CubicSpline::W(-r), 1e-6);
 
     // Gradient at origin is zero
-    Vector3r grad_zero = CubicKernel::gradW(Vector3r::Zero());
+    Vector3r grad_zero = CubicSpline::gradW(Vector3r::Zero());
     TEST_VEC3_NEAR(grad_zero, Vector3r::Zero(), 1e-6);
 
     // Gradient anti-symmetry: gradW(r) == -gradW(-r)
-    Vector3r grad_pos = CubicKernel::gradW(r);
-    Vector3r grad_neg = CubicKernel::gradW(-r);
+    Vector3r grad_pos = CubicSpline::gradW(r);
+    Vector3r grad_neg = CubicSpline::gradW(-r);
     TEST_VEC3_NEAR(grad_pos, -grad_neg, 1e-5);
 }
 
 void test_pbf_density_and_lagrange_multiplier() {
     Real h = static_cast<Real>(0.5);
-    CubicKernel::setRadius(h);
+    CubicSpline::setRadius(h);
 
     // Particle 0 at origin, surrounded by 6 neighbors along +-X, +-Y, +-Z at distance 0.2
     int numParticles = 7;
@@ -75,7 +75,7 @@ void test_pbf_density_and_lagrange_multiplier() {
 
 void test_pbf_density_solve() {
     Real h = static_cast<Real>(0.5);
-    CubicKernel::setRadius(h);
+    CubicSpline::setRadius(h);
 
     int numParticles = 2;
     std::vector<Vector3r> x = { Vector3r(0.0, 0.0, 0.0), Vector3r(static_cast<Real>(0.2), 0.0, 0.0) };
@@ -95,7 +95,7 @@ void test_pbf_density_solve() {
 
 void run_all_fluids_tests() {
     std::cout << "\n=== Running Fluid Constraints Tests ===" << std::endl;
-    RUN_TEST(test_cubic_kernel_properties);
+    RUN_TEST(test_cubic_spline_properties);
     RUN_TEST(test_pbf_density_and_lagrange_multiplier);
     RUN_TEST(test_pbf_density_solve);
 }

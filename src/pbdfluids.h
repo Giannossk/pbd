@@ -6,7 +6,7 @@
 
 using namespace LinearMath;
 
-class CubicKernel
+class CubicSpline
 {
 protected:
 	static Real m_radius;
