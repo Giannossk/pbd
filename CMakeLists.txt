@@ -8,7 +8,9 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Dependency: LinearMath
 include(FetchContent)
 
+# LinearMath Testing
 option(BUILD_TESTING "Build tests" OFF)
+
 if(NOT DEFINED FETCHCONTENT_SOURCE_DIR_LINEARMATH AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../LinearMath/CMakeLists.txt")
     set(FETCHCONTENT_SOURCE_DIR_LINEARMATH "${CMAKE_CURRENT_SOURCE_DIR}/../LinearMath" CACHE PATH "Source directory for LinearMath" FORCE)
 endif()
