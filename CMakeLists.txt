@@ -8,7 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Dependency: LinearMath
 include(FetchContent)
 
-# LinearMath Testing
+# Testing LinearMath
 option(BUILD_TESTING "Build tests" OFF)
 
 if(NOT DEFINED FETCHCONTENT_SOURCE_DIR_LINEARMATH AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../LinearMath/CMakeLists.txt")
@@ -54,7 +54,7 @@ else()
     target_compile_options(pbd PRIVATE -Wall -Wextra)
 endif()
 
-# Testing
+# Testing PBD
 option(PBD_BUILD_TESTING "Build PBD tests" ON)
 
 if(PBD_BUILD_TESTING)
