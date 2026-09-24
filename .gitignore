@@ -1,0 +1,25 @@
+# CMake build directories
+build/
+bin/
+lib/
+out/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.VC.db
+
+# IDEs
+.idea/
+.vscode/
+
+# Compiled Object files, libraries, etc.
+*.obj
+*.o
+*.lib
+*.a
+*.dll
+*.so
+*.dylib
+*.exe
